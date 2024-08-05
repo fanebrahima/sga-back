@@ -28,7 +28,7 @@
             table, caption, th, td {
                 border: 0px solid;
                 font-size: 12px;
-                padding: 5px;
+                padding: 2px;
             }
 
             body{
@@ -95,51 +95,57 @@
         </footer>
 
         <table class="table text-center">
-            <thead style="border: 1px solid; font-size: 12px; padding: 5px;">
-            <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                <th style="border: 1px solid; font-size: 12px; padding: 5px;" class="p-3">
+            <thead style="border: 1px solid; font-size: 12px;">
+            <tr style="border: 1px solid; font-size: 12px;">
+                <th style="border: 1px solid; font-size: 12px; vertical-align: middle;">
                     <img src="{{$logo}}" alt="logo" style="text-align: center; width:100px; height:40px;">
                 </th>
-                <th style="border: 1px solid; font-size: 12px; padding: 5px; padding-top:-5px;" class="p-3">FICHE D'EXPERTISE {{$repair->reference}}</th>
-                <th style="border: 1px solid; font-size: 12px; padding: 5px; padding-top:-5px;" class="p-3">DATE: {{ \Carbon\Carbon::parse($repair->created_at)->format('d/m/Y') }}</th>
+                <th style="border: 1px solid; font-size: 12px; vertical-align: middle;">FICHE D'EXPERTISE {{$repair->reference}}</th>
+                <th style="border: 1px solid; font-size: 12px; vertical-align: middle;">
+                    DATE: {{ \Carbon\Carbon::parse($repair->created_at)->format('d/m/Y') }}
+                    <br>
+                    <img src="{{$qr_code->qr_code}}" alt="qr_code" style="text-align: center; width:100px; height:100px;">
+                </th>
             </tr>
             </thead>
         </table>
 
         <table class="table text-center">
-            <thead style="border: 1px solid; font-size: 12px; padding: 5px;">
-                <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                <th colspan="3" style="border: 1px solid; font-size: 12px; padding: 5px;">DOSSIER SUIVI PAR :</th>
+            <thead style="border: 1px solid; font-size: 12px;">
+                <tr style="border: 1px solid; font-size: 12px;">
+                <th colspan="3" style="border: 1px solid; font-size: 12px;">DOSSIER SUIVI PAR :</th>
                 </tr>
             </thead>
-            <thead style="border: 1px solid; font-size: 12px; padding: 5px;">
-                <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">EXPERT</th>
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">REPARATEUR</th>
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">CLIENT</th>
+            <thead style="border: 1px solid; font-size: 12px;">
+                <tr style="border: 1px solid; font-size: 12px;">
+                    <th style="border: 1px solid; font-size: 12px;">EXPERT</th>
+                    <th style="border: 1px solid; font-size: 12px;">REPARATEUR</th>
+                    <th style="border: 1px solid; font-size: 12px;">CLIENT</th>
                 </tr>
             </thead>
             <tbody>
-                <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">
-                        <div class="text-left d-flex flex-column bd-highlight mb-3" style="text-align:left;">
-                            <div class="p-2 bd-highlight">NOM : <b>{{$user->last_name}} {{$user->first_name}}</b></div>
-                            <div class="p-2 bd-highlight">CONTACT : <b>{{$user->phone}}</b></div>
-                            <div class="p-2 bd-highlight">E-MAIL : <b>{{$user->email}}</b></div>
+                <tr style="border: 1px solid; font-size: 12px;">
+                    <td style="border: 1px solid; font-size: 12px;">
+                        <div class="text-left d-flex flex-column bd-highlight" style="text-align:left;">
+                            <div class="p-1 bd-highlight">NOM : <b>{{$repair->user->last_name}} {{$repair->user->first_name}}</b></div>
+                            <div class="p-1 bd-highlight">CONTACT : <b>{{$repair->user->phone}}</b></div>
+                            <div class="p-1 bd-highlight">E-MAIL : <b>{{$repair->user->email}}</b></div>
                         </div>
                     </td>
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">
-                        <div class="text-left d-flex flex-column bd-highlight mb-3" style="text-align:left;">
-                            <div class="p-2 bd-highlight">NOM : <b>{{$repairer->name}}</b></div>
-                            <div class="p-2 bd-highlight">CONTACT : <b>{{$repairer->phone}}</b></div>
-                            <div class="p-2 bd-highlight">E-MAIL : <b>{{$repairer->email}}</b></div>
+                    <td style="border: 1px solid; font-size: 12px;">
+                        <div class="text-left d-flex flex-column bd-highlight" style="text-align:left;">
+                            <div class="p-1 bd-highlight">NOM : <b>{{$repair->repairer->name}}</b></div>
+                            <div class="p-1 bd-highlight">CONTACT : <b>{{$repair->repairer->phone}}</b></div>
+                            <div class="p-1 bd-highlight">E-MAIL : <b>{{$repair->repairer->email}}</b></div>
                         </div>
                     </td>
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">
-                        <div class="text-left d-flex flex-column bd-highlight mb-3" style="text-align:left;">
-                            <div class="p-2 bd-highlight">NOM : <b>{{$client->name}}</b></div>
-                            <div class="p-2 bd-highlight">CONTACT : <b>{{$client->phone}}</b></div>
-                            <div class="p-2 bd-highlight">E-MAIL : <b>{{$client->email}}</b></div>
+                    <td style="border: 1px solid; font-size: 12px;">
+                        <div class="text-left d-flex flex-column bd-highlight" style="text-align:left;">
+                            <div class="p-1 bd-highlight">NOM : <b>{{$repair->client->name}}</b></div>
+                            <div class="p-1 bd-highlight">CONTACT : <b>{{$repair->client->phone}}</b></div>
+                            <div class="p-1 bd-highlight">E-MAIL : <b>{{$repair->client->email}}</b></div>
+                            <div class="p-1 bd-highlight">Assureur : <b>{{$repair->insurer->name}}</b></div>
+                            <div class="p-1 bd-highlight">Numéro de sinistre : <b>{{$repair->disaster_number}}</b></div>
                         </div>
                     </td>
                 </tr>
@@ -148,126 +154,136 @@
 
 
         <table class="table table-bordered text-center">
-            <thead style="border: 1px solid; font-size: 12px; padding: 5px;">
-                <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                    <th colspan="5" style="border: 1px solid; font-size: 12px; padding: 5px;">IDENTIFICATION DU VEHICULE</th>
+            <thead style="border: 1px solid; font-size: 12px;">
+                <tr style="border: 1px solid; font-size: 12px;">
+                    <th colspan="5" style="border: 1px solid; font-size: 12px;">IDENTIFICATION DU VEHICULE</th>
                 </tr>
             </thead>
-            <thead style="border: 1px solid; font-size: 12px; padding: 5px;">
-                <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">IMMATRICULATION</th>
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">MARQUE</th>
-                    <!-- <th style="border: 1px solid; font-size: 12px; padding: 5px;">MODELE - TYPE - OPTION</th> -->
-                    @if(!$vehicle->type && !$vehicle->option)
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">MODELE</th>
-                    @elseif(!$vehicle->type)
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">MODELE - OPTION</th>
-                    @elseif(!$vehicle->option)
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">MODELE - TYPE</th>
+            <thead style="border: 1px solid; font-size: 12px;">
+                <tr style="border: 1px solid; font-size: 12px;">
+                    <th style="border: 1px solid; font-size: 12px;">IMMATRICULATION</th>
+                    <th style="border: 1px solid; font-size: 12px;">MARQUE</th>
+                    <!-- <th style="border: 1px solid; font-size: 12px;">MODELE - TYPE - OPTION</th> -->
+                    @if(!$repair->vehicle->type && !$repair->vehicle->option)
+                    <th style="border: 1px solid; font-size: 12px;">MODELE</th>
+                    @elseif(!$repair->vehicle->type)
+                    <th style="border: 1px solid; font-size: 12px;">MODELE - OPTION</th>
+                    @elseif(!$repair->vehicle->option)
+                    <th style="border: 1px solid; font-size: 12px;">MODELE - TYPE</th>
                     @else
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">MODELE - TYPE - OPTION</th>
+                    <th style="border: 1px solid; font-size: 12px;">MODELE - TYPE - OPTION</th>
                     @endif
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">COULEUR</th>
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">KILOMETRAGE</th>
+                    <th style="border: 1px solid; font-size: 12px;">COULEUR</th>
+                    <th style="border: 1px solid; font-size: 12px;">KILOMETRAGE</th>
                 </tr>
                 </thead>
             <tbody>
-                <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$vehicle->license_plate}}</td>
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$vehicle->brand_label}}</td>
-                    <!-- <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$vehicle->model}} - {{$vehicle->type}} - {{$vehicle->option}}</td> -->
-                    @if(!$vehicle->type && !$vehicle->option)
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$vehicle->model}}</td>
-                    @elseif(!$vehicle->type && $vehicle->option)
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$vehicle->model}} - {{$vehicle->option}}</td>
-                    @elseif($vehicle->type && !$vehicle->option)
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$vehicle->model}} - {{$vehicle->type}}</td>
+                <tr style="border: 1px solid; font-size: 12px;">
+                    <td style="border: 1px solid; font-size: 12px;">{{$repair->vehicle->license_plate}}</td>
+                    <td style="border: 1px solid; font-size: 12px;">{{$repair->vehicle->brand_label}}</td>
+                    <!-- <td style="border: 1px solid; font-size: 12px;">{{$repair->vehicle->model}} - {{$repair->vehicle->type}} - {{$repair->vehicle->option}}</td> -->
+                    @if(!$repair->vehicle->type && !$repair->vehicle->option)
+                    <td style="border: 1px solid; font-size: 12px;">{{$repair->vehicle->model}}</td>
+                    @elseif(!$repair->vehicle->type && $repair->vehicle->option)
+                    <td style="border: 1px solid; font-size: 12px;">{{$repair->vehicle->model}} - {{$repair->vehicle->option}}</td>
+                    @elseif($repair->vehicle->type && !$repair->vehicle->option)
+                    <td style="border: 1px solid; font-size: 12px;">{{$repair->vehicle->model}} - {{$repair->vehicle->type}}</td>
                     @else
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$vehicle->model}} - {{$vehicle->type}} - {{$vehicle->option}}</td>
+                    <td style="border: 1px solid; font-size: 12px;">{{$repair->vehicle->model}} - {{$repair->vehicle->type}} - {{$repair->vehicle->option}}</td>
                     @endif
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$vehicle->color_label}}</td>
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$vehicle->mileage}} km</td>
+                    <td style="border: 1px solid; font-size: 12px;">{{$repair->vehicle->color_label}}</td>
+                    <td style="border: 1px solid; font-size: 12px;">{{$repair->vehicle->mileage}} km</td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="watermark">{{$repair->reference}} {{$vehicle->license_plate}}</div>
+        <div class="watermark">{{$repair->reference}} {{$repair->vehicle->license_plate}}</div>
 
+        @foreach($repair->shocks as $shock)
+            <div class="text-left d-flex flex-column bd-highlight mt-2 mb-1">
+                <div class="p-2 bd-highlight"><b>POINT DE CHOC</b> : {{$shock->shock_point->label}}</div>
+            </div>
 
-        <div class="text-left d-flex flex-column bd-highlight mb-3">
-            <div class="p-2 bd-highlight"><b>POINT DE CHOC</b> : {{$shock_point->label}}</div>
-        </div>
+            <?php  $i = 0; ?>
 
-        <?php  $i = 0; ?>
-
-        <table class="table table-bordered text-center">
-            <thead style="border: 1px solid; font-size: 12px; padding: 5px; background-color: rgb(223, 221, 218);">
-                <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                    <th colspan="6" style="border: 1px solid; font-size: 12px; padding: 5px;">TRAVAUX A FAIRE SOUS RESERVE DE DEMONTAGE</th>
-                </tr>
-            </thead>
-            <thead style="border: 1px solid;
-                font-size: 12px;
-                padding: 5px;">
-                <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">N°</th>
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">DESIGNATION</th>
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">REMPLACEMENT</th>
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">REPARATION</th>
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">PEINDRE</th>
-                    <th style="border: 1px solid; font-size: 12px; padding: 5px;">CONTRÔLE</th>
-                </tr>
+            <table class="table table-bordered text-center">
+                <thead style="border: 1px solid; font-size: 12px; background-color: rgb(223, 221, 218);">
+                    <tr style="border: 1px solid; font-size: 12px;">
+                        <th colspan="6" style="border: 1px solid; font-size: 12px;">TRAVAUX A FAIRE SOUS RESERVE DE DEMONTAGE</th>
+                    </tr>
                 </thead>
-            <tbody>
-                @foreach($repair_works as $item)
-                <?php  $i = $i + 1; ?>
-                <tr style="border: 1px solid; font-size: 12px; padding: 5px;">
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{ $i }}</td>
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">{{$item->designation_label}}</td>
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">
-                        @if($item->replacement)
-                        <img src="{{$check_icon}}" alt="" width="15" style="padding-top:2px;">
-                        @endif
-                    </td>
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">
-                        @if($item->repair)
-                        <img src="{{$check_icon}}" alt="" width="15" style="padding-top:2px;">
-                        @endif
-                    </td>
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">
-                        @if($item->paint)
-                        <img src="{{$check_icon}}" alt="" width="15" style="padding-top:2px;">
-                        @endif
-                    </td>
-                    <td style="border: 1px solid; font-size: 12px; padding: 5px;">
-                        @if($item->control)
-                        <img src="{{$check_icon}}" alt="" width="15" style="padding-top:2px;">
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                <thead style="border: 1px solid;
+                    font-size: 12px;
+                   ">
+                    <tr style="border: 1px solid; font-size: 12px;">
+                        <th style="border: 1px solid; font-size: 12px;">N°</th>
+                        <th style="border: 1px solid; font-size: 12px;">DESIGNATION</th>
+                        <th style="border: 1px solid; font-size: 12px;">REMPLACEMENT</th>
+                        <th style="border: 1px solid; font-size: 12px;">REPARATION</th>
+                        <th style="border: 1px solid; font-size: 12px;">PEINDRE</th>
+                        <th style="border: 1px solid; font-size: 12px;">CONTRÔLE</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    @foreach($shock->repair_works as $item)
+                    <?php  $i = $i + 1; ?>
+                    <tr style="border: 1px solid; font-size: 12px;">
+                        <td style="border: 1px solid; font-size: 12px;">{{ $i }}</td>
+                        <td style="border: 1px solid; font-size: 12px;">{{$item->designation->label}}</td>
+                        <td style="border: 1px solid; font-size: 12px;">
+                            @if($item->replacement)
+                            <img src="{{$check_icon}}" alt="" width="15" style="padding-top:2px;">
+                            @endif
+                        </td>
+                        <td style="border: 1px solid; font-size: 12px;">
+                            @if($item->repair)
+                            <img src="{{$check_icon}}" alt="" width="15" style="padding-top:2px;">
+                            @endif
+                        </td>
+                        <td style="border: 1px solid; font-size: 12px;">
+                            @if($item->paint)
+                            <img src="{{$check_icon}}" alt="" width="15" style="padding-top:2px;">
+                            @endif
+                        </td>
+                        <td style="border: 1px solid; font-size: 12px;">
+                            @if($item->control)
+                            <img src="{{$check_icon}}" alt="" width="15" style="padding-top:2px;">
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endforeach
 
         <div class="text-left d-flex flex-column bd-highlight" style="background-color: rgb(223, 221, 218);">
-            <div class="p-2 bd-highlight"><b>NOTE D'EXPERT</b> : <br>
-                <p>{{$repair->remark}}</p>
+            <div class="p-2 bd-highlight"><b>NOTE D'EXPERT</b> :
+                {{$repair->remark}}
             </div>
         </div>
         <table class="table text-center table-borderless">
             <thead style="border: 0px solid; font-size: 12px; padding: 5px;">
                 <tr style="border: 0px solid; font-size: 12px; padding: 5px;">
                     <th style="border: 0px solid; font-size: 12px; padding: 5px;" class="p-3">
-                        CLIENT
+                        EXPERT
                     </th>
                     <th style="border: 0px solid; font-size: 12px; padding: 5px;" class="p-3">
-                        EXPERT
+                        CLIENT
                     </th>
                     <th style="border: 0px solid; font-size: 12px; padding: 5px;" class="p-3">
                         REPARATEUR
                     </th>
                 </tr>
                 <tr style="border: 0px solid; font-size: 12px; padding: 5px;">
+                    @if($repair->expert_signature)
+                    <td style="border: 0px solid; font-size: 12px; padding: 5px;" class="p-3">
+                        <img src="{{$repair->expert_signature}}" width="190" height="100" alt="expert_signature">
+                    </td>
+                    @else
+                    <td style="border: 0px solid; font-size: 12px; padding: 5px;" class="p-3">
+                        <img src="{{$wbg}}" width="190" height="100" alt="expert_signature">
+                    </td>
+                    @endif
                     @if($repair->customer_signature)
                     <td style="border: 0px solid; font-size: 12px; padding: 5px;" class="p-3">
                         <img src="{{$repair->customer_signature}}" width="190" height="100" alt="customer_signature">
@@ -277,9 +293,6 @@
                         <img src="{{$wbg}}" width="190" height="100" alt="customer_signature">
                     </td>
                     @endif
-                    <td style="border: 0px solid; font-size: 12px; padding: 5px;" class="p-3">
-                        <img src="{{$repair->expert_signature}}" width="190" height="100" alt="expert_signature">
-                    </td>
                     @if($repair->repairer_signature)
                     <td style="border: 0px solid; font-size: 12px; padding: 5px;" class="p-3">
                         <img src="{{$repair->repairer_signature}}" width="190" height="100" alt="repairer_signature">

@@ -31,7 +31,7 @@ class AddRepairerIdToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('repairer_id');
+            $table->dropConstrainedForeignId('repairer_id');
         });
     }
 }

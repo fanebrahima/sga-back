@@ -31,7 +31,7 @@ class AddPaymentTypeIdToVoucherHistoriesTable extends Migration
     public function down()
     {
         Schema::table('voucher_histories', function (Blueprint $table) {
-            $table->dropColumn('payment_type_id');
+            $table->dropConstrainedForeignId('payment_type_id');
         });
     }
 }

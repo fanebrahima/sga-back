@@ -11,8 +11,11 @@ use App\Mail\VerifyEmail;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\Repairer;
+use App\Models\Shock;
 use App\Models\ShockPoint;
 use App\Models\Client;
+use App\Models\Insurer;
+use App\Models\QrCode;
 use App\Models\Repair;
 use App\Models\RepairWork;
 use App\Models\Status;
@@ -37,36 +40,16 @@ class RepairController extends Controller
         $user = Auth::user();
 
         if($user->profil_id == 1 || $user->profil_id == 2){
-            $repairs = Repair::join('vehicles','vehicles.id','=','repairs.vehicle_id')
-                    ->join('repairers','repairers.id','=','repairs.repairer_id')
-                    ->join('clients','clients.id','=','repairs.client_id')
-                    ->join('shock_points','shock_points.id','=','repairs.shock_point_id')
-                    ->join('brands','brands.id','=','vehicles.brand_id')
-                    ->join('colors','colors.id','=','vehicles.color_id')
-                    ->join('users','users.id','=','repairs.created_by')
-                    ->join('statuses','statuses.id','=','repairs.status_id')
-                    ->select("repairs.*","vehicles.license_plate as vehicle_license_plate","vehicles.model as vehicle_model","vehicles.type as vehicle_type","vehicles.option as vehicle_option",
-                            "brands.label as brand_label","colors.label as color_label","vehicles.mileage as vehicle_mileage","repairers.name as repairer_name","repairers.address as repairer_address","repairers.phone as repairer_phone","repairers.email as repairer_email","repairers.responsible_first_name as repairer_responsible_first_name","repairers.responsible_last_name as repairer_responsible_last_name",
-                            "clients.name as client_name","clients.address as client_address","clients.phone as client_phone","clients.email as client_email","shock_points.label as shock_point_label","users.first_name as user_first_name","users.last_name as user_last_name","users.phone as user_phone","users.email as user_email","users.signature as user_signature","statuses.value as status_value","statuses.label as status_label")
-                    ->where("vehicles.license_plate",'!=', '0001EE01')
-                    ->orderByDesc("repairs.created_at")
-                    ->paginate(10);
+            $repairs = Repair::with('repairer','vehicle','insurer','client','user','shocks','status')
+                ->orderByDesc("repairs.created_at")
+                ->paginate(10);
+                
+            
         } else {
-            $repairs = Repair::join('vehicles','vehicles.id','=','repairs.vehicle_id')
-                    ->join('repairers','repairers.id','=','repairs.repairer_id')
-                    ->join('clients','clients.id','=','repairs.client_id')
-                    ->join('shock_points','shock_points.id','=','repairs.shock_point_id')
-                    ->join('brands','brands.id','=','vehicles.brand_id')
-                    ->join('colors','colors.id','=','vehicles.color_id')
-                    ->join('users','users.id','=','repairs.created_by')
-                    ->join('statuses','statuses.id','=','repairs.status_id')
-                    ->select("repairs.*","vehicles.license_plate as vehicle_license_plate","vehicles.model as vehicle_model","vehicles.type as vehicle_type","vehicles.option as vehicle_option",
-                            "brands.label as brand_label","colors.label as color_label","vehicles.mileage as vehicle_mileage","repairers.name as repairer_name","repairers.address as repairer_address","repairers.phone as repairer_phone","repairers.email as repairer_email","repairers.responsible_first_name as repairer_responsible_first_name","repairers.responsible_last_name as repairer_responsible_last_name",
-                            "clients.name as client_name","clients.address as client_address","clients.phone as client_phone","clients.email as client_email","shock_points.label as shock_point_label","users.first_name as user_first_name","users.last_name as user_last_name","users.phone as user_phone","users.email as user_email","users.signature as user_signature","statuses.value as status_value","statuses.label as status_label")
-                    ->where("repairers.id", $user->repairer_id)
-                    ->where("vehicles.license_plate",'!=', '0001EE01')
-                    ->orderByDesc("repairs.created_at")
-                    ->paginate(10);
+            $repairs = Repair::with('repairer','vehicle','insurer','client','user','shocks','status')
+                ->where("repairers.id", $user->repairer_id)
+                ->orderByDesc("repairs.created_at")
+                ->paginate(10);
         }
 
         return new JsonResponse(
@@ -84,7 +67,8 @@ class RepairController extends Controller
         $user = Auth::user();
 
         if($user->profil_id == 1 || $user->profil_id == 2){
-            $repairs = Repair::join('vehicles','vehicles.id','=','repairs.vehicle_id')
+            $repairs = Repair::with('insurer','client')
+                    ->join('vehicles','vehicles.id','=','repairs.vehicle_id')
                     ->join('repairers','repairers.id','=','repairs.repairer_id')
                     ->join('clients','clients.id','=','repairs.client_id')
                     ->join('shock_points','shock_points.id','=','repairs.shock_point_id')
@@ -99,7 +83,8 @@ class RepairController extends Controller
                     ->orderByDesc("repairs.created_at")
                     ->get();
         } else {
-            $repairs = Repair::join('vehicles','vehicles.id','=','repairs.vehicle_id')
+            $repairs = Repair::with('insurer','client')
+                    ->join('vehicles','vehicles.id','=','repairs.vehicle_id')
                     ->join('repairers','repairers.id','=','repairs.repairer_id')
                     ->join('clients','clients.id','=','repairs.client_id')
                     ->join('shock_points','shock_points.id','=','repairs.shock_point_id')
@@ -178,10 +163,10 @@ class RepairController extends Controller
         $data_check_icon = file_get_contents($path_check_icon);
         $check_icon = 'data:image/'.$type_check_icon.';base64,'.base64_encode($data_check_icon);
 
-        $path_signature = public_path('storage/signature/'.$user_signature);
-        $type_signature = pathinfo($path_signature, PATHINFO_EXTENSION);
-        $data_signature = file_get_contents($path_signature);
-        $signature = 'data:image/'.$type_signature.';base64,'.base64_encode($data_signature);
+        #$path_signature = public_path('storage/signature/'.$user_signature);
+        #$type_signature = pathinfo($path_signature, PATHINFO_EXTENSION);
+        #$data_signature = file_get_contents($path_signature);
+        #$signature = 'data:image/'.$type_signature.';base64,'.base64_encode($data_signature);
 
         $path_wbg = base_path('public/images/wbg.png');
         $type_wbg = pathinfo($path_wbg, PATHINFO_EXTENSION);
@@ -189,15 +174,31 @@ class RepairController extends Controller
         $wbg = 'data:image/'.$type_wbg.';base64,'.base64_encode($data_wbg);
 
         $exist_client = Client::where('name', 'like', '%'.$request->name.'%')->first();
+        $exist_insurer = Insurer::where('name', 'like', '%'.$request->name.'%')->first();
 
         if($exist_client){
             $client = $exist_client;
         } else {
             $client = Client::create(
                 [
-                    'name' => $request->name,
-                    'phone' => $request->phone,
-                    'email' => $request->email,
+                    'name' => $request->client_name,
+                    'phone' => $request->client_phone,
+                    'email' => $request->client_email,
+                    'status_id' => 1,
+                    'created_by' => $userId,
+                    'updated_by' => $userId,
+                ]
+            );
+        }
+
+        if($exist_insurer){
+            $insurer = $exist_insurer;
+        } else {
+            $insurer = Insurer::create(
+                [
+                    'name' => $request->insurer_name,
+                    'phone' => $request->insurer_phone,
+                    'email' => $request->insurer_email,
                     'status_id' => 1,
                     'created_by' => $userId,
                     'updated_by' => $userId,
@@ -210,12 +211,14 @@ class RepairController extends Controller
                 'reference' => $reference,
                 'repairer_id' => $request->repairer_id,
                 'client_id' => $client->id,
+                'insurer_id' => $insurer->id,
                 'vehicle_id' => $request->vehicle_id,
-                'shock_point_id' => $request->shock_point_id,
+                // 'shock_point_id' => $request->shock_point_id,
+                'disaster_number' => $request->disaster_number,
                 'remark' => $request->remark,
                 'amount' => $request->amount,
                 'emails' => json_encode($request->emails),
-                'expert_signature' => $signature,
+                'expert_signature' => $request->expert_signature,
                 'repairer_signature' => $request->repairer_signature,
                 'customer_signature' => $request->customer_signature,
                 'status_id' => 3,
@@ -224,28 +227,46 @@ class RepairController extends Controller
             ]
         );
 
-        $works = $request->get('works');
+        $shock_points = $request->get('shock_points');
 
-        foreach ($works as $data) {
+        foreach ($shock_points as $item) {
 
-            $repair_work = RepairWork::create(
+            $shock = Shock::create(
                 [
                     'repair_id' => $repair->id,
-                    'designation_id' => $data['designation_id'],
-                    'replacement' => $data['replacement'],
-                    'repair' => $data['repair'],
-                    'paint' => $data['paint'],
-                    'control' => $data['control'],
+                    'shock_point_id' => $item['shock_point_id'],
                     'status_id' => 1,
                     'created_by' => $userId,
                     'updated_by' => $userId,
                 ]
             );
 
-            // $detail_order_finals = $order->detail_order_finals()->create($data);
+            foreach ($item['works'] as $data) {
 
-            // $detail_order_temps = $order->detail_order_temps()->create($data);
+                $repair_work = RepairWork::create(
+                    [
+                        'shock_id' => $shock->id,
+                        'designation_id' => $data['designation_id'],
+                        'replacement' => $data['replacement'],
+                        'repair' => $data['repair'],
+                        'paint' => $data['paint'],
+                        'control' => $data['control'],
+                        'status_id' => 1,
+                        'created_by' => $userId,
+                        'updated_by' => $userId,
+                    ]
+                );
+    
+            }
+
         }
+
+        $repair = Repair::with('repairer','vehicle','insurer','client','user','shocks')
+                ->select("*")
+                ->where('repairs.id',$repair->id)
+                ->first();
+
+        $qr_code = QrCode::where('status_id', 1)->first();
 
         $repair_works = RepairWork::join('repairs','repairs.id','=','repair_works.repair_id')
                     ->join('designations','designations.id','=','repair_works.designation_id')
@@ -286,7 +307,7 @@ class RepairController extends Controller
 
         if($repair){
 
-            $pdf = PDF::loadView('repair/index',compact('repair','repair_works','user','repairer','client','vehicle','shock_point','now','numberTransformer','logo','check_icon','signature','wbg'));
+            $pdf = PDF::loadView('repair/index',compact('repair','qr_code','now','numberTransformer','logo','check_icon','wbg'));
             $pdf->set_option('isHtml5ParserEnabled', true);
             $pdf->set_option('isRemoteEnabled', true);
             $pdf->setOptions(['defaultFont' => 'sans-serif']);
@@ -356,6 +377,8 @@ class RepairController extends Controller
                 ->where('repairs.id', $request->id)
                 ->first();
 
+        $qr_code = QrCode::where('status_id', 1)->first();
+        
         $repair_works = RepairWork::join('repairs','repairs.id','=','repair_works.repair_id')
         ->join('designations','designations.id','=','repair_works.designation_id')
         ->join('statuses','statuses.id','=','repair_works.status_id')
@@ -398,10 +421,10 @@ class RepairController extends Controller
         $data_check_icon = file_get_contents($path_check_icon);
         $check_icon = 'data:image/'.$type_check_icon.';base64,'.base64_encode($data_check_icon);
 
-        $path_signature = public_path('storage/signature/'.$repair->user_signature);
-        $type_signature = pathinfo($path_signature, PATHINFO_EXTENSION);
-        $data_signature = file_get_contents($path_signature);
-        $signature = 'data:image/'.$type_signature.';base64,'.base64_encode($data_signature);
+        #$path_signature = public_path('storage/signature/'.$user_signature);
+        #$type_signature = pathinfo($path_signature, PATHINFO_EXTENSION);
+        #$data_signature = file_get_contents($path_signature);
+        #$signature = 'data:image/'.$type_signature.';base64,'.base64_encode($data_signature);
 
         $path_wbg = base_path('public/images/wbg.png');
         $type_wbg = pathinfo($path_wbg, PATHINFO_EXTENSION);
@@ -441,7 +464,7 @@ class RepairController extends Controller
                 }
 
             } else {
-                $pdf = PDF::loadView('repair/index',compact('repair','repair_works','user','repairer','vehicle','shock_point','now','numberTransformer','logo','check_icon','signature','wbg'));
+                $pdf = PDF::loadView('repair/index',compact('repair','qr_code','repair_works','user','repairer','vehicle','shock_point','now','numberTransformer','logo','check_icon','wbg'));
                 $pdf->set_option('isHtml5ParserEnabled', true);
                 $pdf->set_option('isRemoteEnabled', true);
                 $pdf->setOptions(['defaultFont' => 'sans-serif']);
@@ -483,6 +506,37 @@ class RepairController extends Controller
 
     }
 
+    public function download_repair($reference)
+    {
+        $path = public_path("storage/repair/".$reference.".pdf");
+
+        if (file_exists($path)) {
+            return response()->download($path);
+        }
+
+        return response()->json(['message' => 'File not found.'], 404);
+    }
+
+    public function download_photo($reference)
+    {
+        $path = public_path("storage/before_photos/".$reference.".png");
+
+        if (!file_exists($path)) {
+            $path = public_path("storage/during_photos/".$reference.".png");
+        }
+
+        if (!file_exists($path)) {
+            $path = public_path("storage/after_photos/".$reference.".png");
+        }
+
+        if (file_exists($path)) {
+            return response()->download($path);
+        }
+
+        return response()->json(['message' => 'File not found.'], 404);
+    }
+
+
     public function add_before_photos(Request $request)
     {
         $user = Auth::user();
@@ -507,9 +561,11 @@ class RepairController extends Controller
                 foreach($request->file('before_photos') as $file)
                 {
                     $count = $count + 1;
-                    $name = 'IMG_BP'.$today.'_'.$count.'.'.$file->getClientOriginalExtension();
+                    $file_name = 'IMG_BP'.$today.'_'.$count;
+                    // $name = 'IMG_BP'.$today.'_'.$count.'.'.$file->getClientOriginalExtension();
+                    $name = 'IMG_BP'.$today.'_'.$count.'.png';
                     $file->move(public_path('storage/before_photos'), $name);
-                    $files[] = $name;
+                    $files[] = $file_name;
                 }
             }
 
@@ -568,9 +624,11 @@ class RepairController extends Controller
                 foreach($request->file('during_photos') as $file)
                 {
                     $count = $count + 1;
-                    $name = 'IMG_DP'.$today.'_'.$count.'.'.$file->getClientOriginalExtension();
+                    $file_name = 'IMG_DP'.$today.'_'.$count;
+                    // $name = 'IMG_DP'.$today.'_'.$count.'.'.$file->getClientOriginalExtension();
+                    $name = 'IMG_DP'.$today.'_'.$count.'.png';
                     $file->move(public_path('storage/during_photos'), $name);
-                    $files[] = $name;
+                    $files[] = $file_name;
                 }
             }
 
@@ -629,9 +687,11 @@ class RepairController extends Controller
                 foreach($request->file('after_photos') as $file)
                 {
                     $count = $count + 1;
-                    $name = 'IMG_AP'.$today.'_'.$count.'.'.$file->getClientOriginalExtension();
+                    $file_name = 'IMG_AP'.$today.'_'.$count;
+                    // $name = 'IMG_AP'.$today.'_'.$count.'.'.$file->getClientOriginalExtension();
+                    $name = 'IMG_AP'.$today.'_'.$count.'.png';
                     $file->move(public_path('storage/after_photos'), $name);
-                    $files[] = $name;
+                    $files[] = $file_name;
                 }
             }
 
@@ -744,12 +804,12 @@ class RepairController extends Controller
                     ->where('shock_points.id',$repair->shock_point_id)
                     ->first();
 
-            $path_signature = public_path('storage/signature/'.$repair->user_signature);
-            $type_signature = pathinfo($path_signature, PATHINFO_EXTENSION);
-            $data_signature = file_get_contents($path_signature);
-            $signature = 'data:image/'.$type_signature.';base64,'.base64_encode($data_signature);
+            #$path_signature = public_path('storage/signature/'.$user_signature);
+            #$type_signature = pathinfo($path_signature, PATHINFO_EXTENSION);
+            #$data_signature = file_get_contents($path_signature);
+            #$signature = 'data:image/'.$type_signature.';base64,'.base64_encode($data_signature);
 
-            $pdf = PDF::loadView('repair/index',compact('repair','repair_works','user','repairer','client','vehicle','shock_point','now','numberTransformer','logo','check_icon','signature','wbg'));
+            $pdf = PDF::loadView('repair/index',compact('repair','repair_works','user','repairer','client','vehicle','shock_point','now','numberTransformer','logo','check_icon','wbg'));
             $pdf->set_option('isHtml5ParserEnabled', true);
             $pdf->set_option('isRemoteEnabled', true);
             $pdf->setOptions(['defaultFont' => 'sans-serif']);
@@ -802,33 +862,21 @@ class RepairController extends Controller
      */
     public function show($id)
     {
-        $repair = Repair::join('vehicles','vehicles.id','=','repairs.vehicle_id')
-                    ->join('repairers','repairers.id','=','repairs.repairer_id')
-                    ->join('clients','clients.id','=','repairs.client_id')
-                    ->join('shock_points','shock_points.id','=','repairs.shock_point_id')
-                    ->join('brands','brands.id','=','vehicles.brand_id')
-                    ->join('colors','colors.id','=','vehicles.color_id')
-                    ->join('users','users.id','=','repairs.created_by')
-                    ->join('statuses','statuses.id','=','repairs.status_id')
-                    ->select("repairs.*","vehicles.license_plate as vehicle_license_plate","vehicles.model as vehicle_model","vehicles.type as vehicle_type","vehicles.option as vehicle_option",
-                            "vehicles.mileage as vehicle_mileage","repairers.name as repairer_name","repairers.address as repairer_address","repairers.phone as repairer_phone","repairers.email as repairer_email","repairers.responsible_first_name as repairer_responsible_first_name","repairers.responsible_last_name as repairer_responsible_last_name",
-                            "clients.name as client_name","clients.address as client_address","clients.phone as client_phone","clients.email as client_email","brands.label as brand_label","colors.label as color_label","shock_points.label as shock_point_label","users.first_name as user_first_name","users.last_name as user_last_name","users.phone as user_phone","users.email as user_email","users.signature as user_signature","statuses.value as status_value","statuses.label as status_label")
-                    ->where('repairs.id', $id)
-                    ->first();
+        $repair = Repair::with('repairer','vehicle','insurer','client','user','shocks','status')
+                ->where('repairs.id', $id)
+                ->orderByDesc("repairs.created_at")
+                ->first();
 
-        $repair_works = RepairWork::join('repairs','repairs.id','=','repair_works.repair_id')
-                    ->join('designations','designations.id','=','repair_works.designation_id')
-                    ->join('statuses','statuses.id','=','repair_works.status_id')
-                    ->select("repair_works.*","designations.label as designation_label","statuses.value as status_value","statuses.label as status_label")
-                    ->where("repair_works.repair_id",$repair->id)
-                    ->get();
+        $qr_code = QrCode::where('status_id', 1)->first();
+
+        
 
         return new JsonResponse(
             [
                 'success' => true,
                 'message' => 'Liste des réparations.',
                 'repair' => $repair,
-                'repair_works' => $repair_works,
+                'qr_code' => $qr_code,
                 'emails' => json_decode($repair->emails),
             ],
             200

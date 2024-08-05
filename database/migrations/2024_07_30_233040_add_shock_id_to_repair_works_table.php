@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateRepairWorksTable extends Migration
+class AddShockIdToRepairWorksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +14,11 @@ class UpdateRepairWorksTable extends Migration
     public function up()
     {
         Schema::table('repair_works', function (Blueprint $table) {
-            $table->unsignedBigInteger('repair_id')->index()->nullable();
+            $table->unsignedBigInteger('shock_id')->index()->nullable();
 
-            $table->foreign('repair_id')
+            $table->foreign('shock_id')
                 ->references('id')
-                ->on('repairs')
+                ->on('shocks')
                 ->onDelete('cascade');
         });
     }
@@ -31,7 +31,7 @@ class UpdateRepairWorksTable extends Migration
     public function down()
     {
         Schema::table('repair_works', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('repair_id');
+            $table->dropConstrainedForeignId('shock_id');
         });
     }
 }

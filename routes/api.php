@@ -217,6 +217,28 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
+    Route::group(['prefix' => '/insurer'], function () {
+
+        Route::get('/', [App\Http\Controllers\Api\InsurerController::class, 'index']);
+
+        Route::get('/all', [App\Http\Controllers\Api\InsurerController::class, 'all']);
+
+        Route::post('/create', [App\Http\Controllers\Api\InsurerController::class, 'create']);
+
+        Route::get('/{id}', [App\Http\Controllers\Api\InsurerController::class, 'show']);
+
+        Route::post('/update', [App\Http\Controllers\Api\InsurerController::class, 'update']);
+
+        Route::post('/enable', [App\Http\Controllers\Api\InsurerController::class, 'enable']);
+
+        Route::post('/disable', [App\Http\Controllers\Api\InsurerController::class, 'disable']);
+
+        Route::get('/search/{information}', [App\Http\Controllers\Api\InsurerController::class, 'search']);
+
+        Route::get('/delete', [App\Http\Controllers\Api\InsurerController::class, 'destroy']);
+
+    });
+
     Route::group(['prefix' => '/vehicle'], function () {
 
         Route::get('/', [App\Http\Controllers\Api\VehicleController::class, 'index']);
@@ -329,6 +351,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/add_after_photos', [App\Http\Controllers\Api\RepairController::class, 'add_after_photos']);
 
+        Route::get('download_repair/{reference}', [App\Http\Controllers\Api\RepairController::class, 'download_repair']);
+
+        Route::get('download_photo/{reference}', [App\Http\Controllers\Api\RepairController::class, 'download_photo']);
+
+        Route::get('download_during_photo/{reference}', [App\Http\Controllers\Api\RepairController::class, 'download_during_photo']);
+
+        Route::get('download_after_photo/{reference}', [App\Http\Controllers\Api\RepairController::class, 'download_after_photo']);
+
     });
 
     Route::group(['prefix' => '/brand'], function () {
@@ -400,6 +430,30 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/search/{information}', [App\Http\Controllers\Api\ColorController::class, 'search']);
 
         Route::get('/delete', [App\Http\Controllers\Api\ColorController::class, 'destroy']);
+
+    });
+
+    Route::group(['prefix' => '/qr-code'], function () {
+
+        Route::get('/', [App\Http\Controllers\Api\QrCodeController::class, 'index']);
+
+        Route::get('/all', [App\Http\Controllers\Api\QrCodeController::class, 'all']);
+
+        Route::get('/one', [App\Http\Controllers\Api\QrCodeController::class, 'one']);
+
+        Route::post('/create', [App\Http\Controllers\Api\QrCodeController::class, 'create']);
+
+        Route::get('/{id}', [App\Http\Controllers\Api\QrCodeController::class, 'show']);
+
+        Route::post('/update', [App\Http\Controllers\Api\QrCodeController::class, 'update']);
+
+        Route::post('/enable', [App\Http\Controllers\Api\QrCodeController::class, 'enable']);
+
+        Route::post('/disable', [App\Http\Controllers\Api\QrCodeController::class, 'disable']);
+
+        Route::get('/search/{information}', [App\Http\Controllers\Api\QrCodeController::class, 'search']);
+
+        Route::get('/delete', [App\Http\Controllers\Api\QrCodeController::class, 'destroy']);
 
     });
 
